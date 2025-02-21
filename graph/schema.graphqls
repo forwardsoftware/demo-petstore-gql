@@ -1,28 +1,37 @@
-# GraphQL schema example
+# Petstore demo GraphQL schema
 #
-# https://gqlgen.com/getting-started/
+# Ported from YAML schema at https://learn.openapis.org/examples/v3.0/petstore.html#yaml
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
+type Pet {
   id: ID!
   name: String!
+  tags: [String!]
 }
 
 type Query {
-  todos: [Todo!]!
+  """
+  List all pets
+
+  limit: How many Pets to return at one time (max 100)
+  """
+  pets(limit: Int): [Pet]!
+
+  """
+  Info for a specific pet
+
+  id: The ID of the Pet to retrieve
+  """
+  pet(id: ID!): Pet!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input PetInput {
+  name: String!
+  tags: [String!]
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  """
+  Create a pet
+  """
+  petCreate(pet: PetInput!): Pet!
 }
