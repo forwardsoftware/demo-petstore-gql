@@ -1,0 +1,70 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/go-postgres
+{
+  "name": "ForWarD Software - Petstore GraphQL Demo",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "installOhMyZshConfig": true,
+      "upgradePackages": true,
+      "username": "vscode",
+      "userUid": "automatic",
+      "userGid": "automatic"
+    },
+    "ghcr.io/devcontainers-extra/features/zsh-plugins:0": {
+      "plugins": "git golang",
+      "omzPlugins": "https://github.com/zsh-users/zsh-autosuggestions",
+      "username": "vscode"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/forwardsoftware/devcontainer-features/go-mod-cache:1": {},
+    "ghcr.io/azutake/devcontainer-features/go-packages-install:0": {
+      "packages": "github.com/pressly/goose/v3/cmd/goose@latest,github.com/sqlc-dev/sqlc/cmd/sqlc@latest,golang.org/x/text/cmd/gotext@latest"
+    }
+  },
+
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "golang.go",
+        "GraphQL.vscode-graphql",
+        "GraphQL.vscode-graphql-syntax",
+        "redhat.vscode-yaml",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ],
+      "settings": {
+        "sqltools.connections": [
+          {
+            "name": "Local",
+            "driver": "PostgreSQL",
+            "previewLimit": 50,
+            "server": "db",
+            "port": 5432,
+            "database": "postgres",
+            "username": "postgres",
+            "password": "postgres"
+          }
+        ]
+      }
+    }
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [5432],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "go version",
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}
