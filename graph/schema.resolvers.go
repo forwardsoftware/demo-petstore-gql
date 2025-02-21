@@ -10,14 +10,19 @@ import (
 	"petstore-gql/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// PetCreate is the resolver for the petCreate field.
+func (r *mutationResolver) PetCreate(ctx context.Context, pet model.PetInput) (*model.Pet, error) {
+	panic(fmt.Errorf("not implemented: PetCreate - petCreate"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// Pets is the resolver for the pets field.
+func (r *queryResolver) Pets(ctx context.Context, limit *int32) ([]*model.Pet, error) {
+	panic(fmt.Errorf("not implemented: Pets - pets"))
+}
+
+// Pet is the resolver for the pet field.
+func (r *queryResolver) Pet(ctx context.Context, id string) (*model.Pet, error) {
+	panic(fmt.Errorf("not implemented: Pet - pet"))
 }
 
 // Mutation returns MutationResolver implementation.
