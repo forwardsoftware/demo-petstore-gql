@@ -56,7 +56,7 @@ func main() {
 	// Setup DB queries
 	queries := dbqueries.New(db)
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.New(graph.NewExecutableSchema(graph.NewRootResolvers(queries)))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
