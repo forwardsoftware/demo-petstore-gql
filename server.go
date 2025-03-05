@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	dbqueries "petstore-gql/db"
 	"petstore-gql/graph"
 
 	_ "github.com/lib/pq"
@@ -51,6 +52,9 @@ func main() {
 	if err := goose.Up(db, "migrations"); err != nil {
 		panic(err)
 	}
+
+	// Setup DB queries
+	queries := dbqueries.New(db)
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
