@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"petstore-gql/graph"
 
 	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -19,6 +21,9 @@ import (
 )
 
 const defaultPort = "8080"
+
+//go:embed migrations/*.sql
+var embedMigrations embed.FS
 
 func main() {
 	port := os.Getenv("PORT")
@@ -33,6 +38,19 @@ func main() {
 	}
 
 	defer db.Close()
+
+	// Setup goose library
+	goose.SetBaseFS(embedMigrations)
+
+	// Setup goose dialect
+	if err := goose.SetDialect("postgres"); err != nil {
+		panic(err)
+	}
+
+	// Run migrations
+	if err := goose.Up(db, "migrations"); err != nil {
+		panic(err)
+	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
