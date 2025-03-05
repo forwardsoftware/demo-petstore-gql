@@ -1,0 +1,13 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "db/queries.sql"
+    schema: "migrations"
+    gen:
+      go:
+        package: "db"
+        out: "db"
+        sql_package: "database/sql" # evaluate switch to "pgx/v5"
+        sql_driver: "github.com/lib/pq"
+        query_parameter_limit: 10
+        emit_empty_slices: true
