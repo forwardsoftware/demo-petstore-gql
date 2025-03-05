@@ -8,21 +8,65 @@ import (
 	"context"
 	"fmt"
 	"petstore-gql/graph/model"
+	"strconv"
 )
 
 // PetCreate is the resolver for the petCreate field.
 func (r *mutationResolver) PetCreate(ctx context.Context, pet model.PetInput) (*model.Pet, error) {
-	panic(fmt.Errorf("not implemented: PetCreate - petCreate"))
+	pt, err := r.q.PetCreate(ctx, pet.Name, pet.Tags)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Pet{
+		ID:   fmt.Sprintf("%d", pt.ID),
+		Name: pt.Name,
+		Tags: pt.Tags,
+	}, nil
 }
 
 // Pets is the resolver for the pets field.
 func (r *queryResolver) Pets(ctx context.Context, limit *int32) ([]*model.Pet, error) {
-	panic(fmt.Errorf("not implemented: Pets - pets"))
+	lmt := int32(100)
+	if limit != nil {
+		lmt = *limit
+	}
+
+	pts, err := r.q.PetsList(ctx, lmt)
+	if err != nil {
+		return nil, err
+	}
+
+	pets := make([]*model.Pet, 0, len(pts))
+	for _, pt := range pts {
+		pets = append(pets, &model.Pet{
+			ID:   fmt.Sprintf("%d", pt.ID),
+			Name: pt.Name,
+			Tags: pt.Tags,
+		})
+	}
+
+	return pets, nil
 }
 
 // Pet is the resolver for the pet field.
 func (r *queryResolver) Pet(ctx context.Context, id string) (*model.Pet, error) {
-	panic(fmt.Errorf("not implemented: Pet - pet"))
+	// string to int
+	iid, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+
+	pt, err := r.q.PetGet(ctx, int32(iid))
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Pet{
+		ID:   fmt.Sprintf("%d", pt.ID),
+		Name: pt.Name,
+		Tags: pt.Tags,
+	}, nil
 }
 
 // Mutation returns MutationResolver implementation.
