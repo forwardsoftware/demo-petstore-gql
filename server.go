@@ -1,10 +1,14 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"petstore-gql/graph"
+
+	_ "github.com/lib/pq"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -21,6 +25,14 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	// Connect to DB
+	db, err := connectDatabase()
+	if err != nil {
+		panic(err)
+	}
+
+	defer db.Close()
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
@@ -40,4 +52,22 @@ func main() {
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func connectDatabase() (*sql.DB, error) {
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		return nil, fmt.Errorf("missing DATABASE_URL environment variable")
+	}
+
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
